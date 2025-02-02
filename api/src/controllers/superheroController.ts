@@ -13,7 +13,7 @@ export const addSuperhero = async (req: Request, res: Response) => {
     await client.zadd(HEROES_KEY, -humilityScore, JSON.stringify(superhero));
     res
       .status(201)
-      .json({ message: "Superhero added successfully", superhero });
+      .json({ message: "Superhero added successfully!", superhero });
   } catch (error) {
     res.status(500).json({ error: "Failed to add superhero" });
   }
