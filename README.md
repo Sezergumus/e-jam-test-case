@@ -127,3 +127,4 @@ Here are some improvements and features I would love to explore:
 4. Implement caching strategies
 5. Add superhero categories or tags
 6. Create a more sophisticated scoring system
+7. Add caching client-side to improve fetch time

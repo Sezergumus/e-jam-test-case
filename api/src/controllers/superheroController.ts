@@ -2,15 +2,24 @@ import { Request, Response } from "express";
 import client from "../config/redisClient";
 
 const HEROES_KEY = "superheroes";
+let currId = 3; // we initialize currentId by 3 three because the initial data has max id of 3.
 
 // Add a superhero
 export const addSuperhero = async (req: Request, res: Response) => {
   try {
     const { name, superpower, humilityScore } = req.body;
     const superhero = { name, superpower, humilityScore };
+    currId++;
 
     // Store in descending order by appending minus sign before humilityScore
-    await client.zadd(HEROES_KEY, -humilityScore, JSON.stringify(superhero));
+    await client.zadd(
+      HEROES_KEY,
+      -humilityScore,
+      JSON.stringify({
+        id: currId,
+        ...superhero,
+      })
+    );
     res
       .status(201)
       .json({ message: "Superhero added successfully!", superhero });
@@ -41,9 +50,18 @@ export const initializeSuperheroes = async () => {
   await client.del(HEROES_KEY);
 
   const initialHeroes = [
-    { name: "Superman", superpower: "Flying", humilityScore: 10 },
-    { name: "Batman", superpower: "Intelligence", humilityScore: 9 },
-    { name: "Flash", superpower: "Super Speed", humilityScore: 8 },
+    { id: 1, name: "Superman", superpower: "Flying", humilityScore: 10 },
+    { id: 2, name: "Batman", superpower: "Intelligence", humilityScore: 7 },
+    { id: 3, name: "Flash", superpower: "Super Speed", humilityScore: 4 },
+    { id: 4, name: "Superman", superpower: "Flying", humilityScore: 10 },
+    { id: 5, name: "Batman", superpower: "Intelligence", humilityScore: 7 },
+    { id: 6, name: "Flash", superpower: "Super Speed", humilityScore: 4 },
+    { id: 7, name: "Superman", superpower: "Flying", humilityScore: 10 },
+    { id: 8, name: "Batman", superpower: "Intelligence", humilityScore: 7 },
+    { id: 9, name: "Flash", superpower: "Super Speed", humilityScore: 4 },
+    { id: 10, name: "Superman", superpower: "Flying", humilityScore: 10 },
+    { id: 11, name: "Batman", superpower: "Intelligence", humilityScore: 7 },
+    { id: 12, name: "Flash", superpower: "Super Speed", humilityScore: 4 },
   ];
 
   const existingHeroes = await client.zrange(HEROES_KEY, 0, -1);

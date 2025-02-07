@@ -1,0 +1,45 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body {
+  height: 100%;
+}
+
+.dark body {
+  background: radial-gradient(circle at bottom center, #3c496a 0, #020817 50%);
+}
+
+.light body {
+  background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+}
+
+.dark .header {
+  background: rgba(33, 33, 34, 0.25) !important;
+  border-bottom: 1px solid hsla(0, 0%, 100%, 0.1);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4); /* Dark shadow */
+}
+
+.light .header {
+  background: rgba(255, 255, 255, 0.8) !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Soft shadow */
+}
+
+.table-body tr {
+  transition: all 0.25s ease-in-out;
+  user-select: none;
+}
+
+.dark .table-body tr:hover {
+  background-color: rgba(255, 255, 255, 0.25);
+}
+
+*:focus {
+  outline: none;
+}
+
+.light .white-logo {
+  display: none;
+}
