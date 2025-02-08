@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const ioredis_1 = __importDefault(require("ioredis"));
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
-const client = new ioredis_1.default(process.env.REDIS_URL);
+const client = new ioredis_1.default(process.env.REDIS_URL + "?family=0");
 client.on("connect", () => {
     console.log("Connected to Redis");
 });
