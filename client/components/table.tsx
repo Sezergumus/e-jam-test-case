@@ -20,12 +20,19 @@ import {
 import { Button } from "@heroui/button";
 import { Chip } from "@heroui/chip";
 import { Pagination } from "@heroui/pagination";
+import { useDisclosure } from "@heroui/modal";
+import { toast } from "sonner";
+
 import {
   VerticalDotsIcon,
   SearchIcon,
   ChevronDownIcon,
   PlusIcon,
+  RefreshIcon,
 } from "./icons";
+
+import CreateModal from "@/components/create-modal";
+import EditModal from "@/components/edit-modal";
 
 export function capitalize(s: string) {
   return s ? s.charAt(0).toUpperCase() + s.slice(1).toLowerCase() : "";
@@ -48,7 +55,7 @@ const INITIAL_VISIBLE_COLUMNS = [
 ];
 
 interface Superhero {
-  id: number;
+  id: number | null;
   name: string;
   superpower: string;
   humilityScore: number;
@@ -59,10 +66,11 @@ const API_URL = "https://krqj7w6j-5000.euw.devtunnels.ms/api/superheroes";
 
 export default function App() {
   const [superheroes, setSuperheroes] = useState<Superhero[]>([]);
-  const [newHero, setNewHero] = useState({
+  const [selectedHero, setSelectedHero] = useState<Superhero>({
+    id: null,
     name: "",
     superpower: "",
-    humilityScore: 0,
+    humilityScore: 5,
   });
   const [fetchTime, setFetchTime] = useState<number | null>(null);
   const [filterValue, setFilterValue] = useState("");
@@ -76,6 +84,8 @@ export default function App() {
     direction: "descending",
   });
   const [page, setPage] = useState(1);
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const editModal = useDisclosure();
 
   const hasSearchFilter = Boolean(filterValue);
 
@@ -87,7 +97,7 @@ export default function App() {
     );
   }, [visibleColumns]);
 
-  const filteredHeroes = React.useMemo(() => {
+  const filteredHeroes = useMemo(() => {
     let filteredHeroes = [...superheroes];
 
     if (hasSearchFilter) {
@@ -142,12 +152,27 @@ export default function App() {
             <Dropdown className="bg-white/25 dark:bg-black/25 backdrop-blur-lg border-1 border-default-200">
               <DropdownTrigger>
                 <Button isIconOnly radius="full" size="sm" variant="light">
-                  <VerticalDotsIcon className="text-white" />
+                  <VerticalDotsIcon className="text-black dark:text-white" />
                 </Button>
               </DropdownTrigger>
               <DropdownMenu>
-                <DropdownItem key="edit">Edit</DropdownItem>
-                <DropdownItem key="delete">Delete</DropdownItem>
+                <DropdownItem
+                  key="edit"
+                  onPress={() => {
+                    setSelectedHero(hero);
+                    editModal.onOpen();
+                  }}
+                >
+                  Edit
+                </DropdownItem>
+                <DropdownItem
+                  key="delete"
+                  onPress={() => {
+                    handleDelete(hero);
+                  }}
+                >
+                  Delete
+                </DropdownItem>
               </DropdownMenu>
             </Dropdown>
           </div>
@@ -176,6 +201,29 @@ export default function App() {
     if (time < 0.5) return "text-green-500"; // Fast
     if (time >= 0.5 && time <= 1.5) return "text-yellow-500"; // Avg
     return "text-red-500"; // Slow
+  };
+
+  const handleDelete = async (hero: Superhero) => {
+    try {
+      const response = await fetch(API_URL + "/one", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(hero),
+      });
+
+      if (response.ok) {
+        toast.success("Superhero deleted successfully!");
+        getHeroes();
+      } else {
+        const errorData = await response.json();
+
+        toast.error(errorData.message || "Failed to delete superhero.");
+      }
+    } catch (error) {
+      toast.error("Network error. Please try again later.");
+    }
   };
 
   useEffect(() => {
@@ -238,7 +286,7 @@ export default function App() {
   const topContent = useMemo(() => {
     return (
       <div className="flex flex-col gap-4">
-        <div className="flex justify-between gap-3 items-end">
+        <div className="flex flex-col sm:flex-row justify-between gap-3 items-center sm:items-end">
           <Input
             isClearable
             classNames={{
@@ -254,12 +302,16 @@ export default function App() {
             onValueChange={onSearchChange}
           />
           <div className="flex gap-3">
+            <Button isIconOnly size="sm" variant="light" onPress={getHeroes}>
+              <RefreshIcon />
+            </Button>
             <Dropdown>
-              <DropdownTrigger className="hidden sm:flex">
+              <DropdownTrigger className="sm:flex">
                 <Button
                   endContent={<ChevronDownIcon className="text-small" />}
                   size="sm"
                   variant="flat"
+                  className="sm:text-base"
                 >
                   Columns
                 </Button>
@@ -280,9 +332,10 @@ export default function App() {
               </DropdownMenu>
             </Dropdown>
             <Button
-              className="bg-foreground text-background"
+              className="bg-foreground text-background sm:text-base"
               endContent={<PlusIcon />}
               size="sm"
+              onPress={onOpen}
             >
               Add New
             </Button>
@@ -341,6 +394,21 @@ export default function App() {
 
   return (
     <div className="w-full">
+      <CreateModal
+        API_URL={API_URL}
+        getHeroes={getHeroes}
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+      />
+      <EditModal
+        API_URL={API_URL}
+        getHeroes={getHeroes}
+        isOpen={editModal.isOpen}
+        selectedHero={selectedHero}
+        setSelectedHero={setSelectedHero}
+        onOpenChange={editModal.onOpenChange}
+      />
+
       <Table
         aria-label="Superheroes list"
         bottomContent={bottomContent}

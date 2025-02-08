@@ -7,10 +7,12 @@ import { siteConfig } from "@/config/site";
 import { title, subtitle } from "@/components/primitives";
 import { GithubIcon } from "@/components/icons";
 import Table from "@/components/table";
+import { Toaster } from "sonner";
 
 export default function Home() {
   return (
     <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
+      <Toaster closeButton richColors />
       <div className="max-w-xl text-center justify-center">
         <div>
           <span className={title()}>Humble&nbsp;</span>
