@@ -12,6 +12,22 @@ import {
   ModalFooter,
 } from "@heroui/modal";
 
+interface Hero {
+  id: number;
+  name: string;
+  superpower: string;
+  humilityScore: number;
+}
+
+interface EditModalProps {
+  API_URL: string;
+  isOpen: boolean;
+  onOpenChange: (isOpen: boolean) => void;
+  getHeroes: () => Promise<void>;
+  selectedHero: Hero | null;
+  setSelectedHero: (hero: Hero | null) => void;
+}
+
 function EditModal({
   API_URL,
   isOpen,
@@ -19,11 +35,11 @@ function EditModal({
   getHeroes,
   selectedHero,
   setSelectedHero,
-}) {
+}: EditModalProps) {
   const isFormValid =
-    selectedHero.name.trim() && selectedHero.superpower.trim();
+    selectedHero?.name.trim() && selectedHero?.superpower.trim();
 
-  const editHero = async (heroData) => {
+  const editHero = async (heroData: Hero) => {
     try {
       const response = await fetch(API_URL, {
         method: "PUT",
@@ -35,7 +51,12 @@ function EditModal({
 
       if (response.ok) {
         toast.success("Superhero added successfully!");
-        setSelectedHero({ name: "", superpower: "", humilityScore: 5 });
+        setSelectedHero({
+          id: heroData.id,
+          name: "",
+          superpower: "",
+          humilityScore: 5,
+        });
         getHeroes();
       } else {
         const data = await response.json();
@@ -58,45 +79,52 @@ function EditModal({
         {(onClose) => (
           <>
             <ModalHeader className="flex flex-col gap-1">Edit hero</ModalHeader>
-            <ModalBody>
-              <Input
-                label="Name"
-                variant="bordered"
-                value={selectedHero.name}
-                onChange={(e) =>
-                  setSelectedHero({ ...selectedHero, name: e.target.value })
-                }
-              />
-              <Input
-                label="Superpower"
-                variant="bordered"
-                value={selectedHero.superpower}
-                onChange={(e) =>
-                  setSelectedHero({
-                    ...selectedHero,
-                    superpower: e.target.value,
-                  })
-                }
-              />
-              <Slider
-                className="max-w-md"
-                color="foreground"
-                value={selectedHero.humilityScore}
-                label="Humility Score"
-                maxValue={10}
-                minValue={0}
-                showSteps={true}
-                showOutline={true}
-                size="md"
-                step={1}
-                onChange={(value) =>
-                  setSelectedHero((prev) => ({
-                    ...prev,
-                    humilityScore: Array.isArray(value) ? value[0] : value,
-                  }))
-                }
-              />
-            </ModalBody>
+            {selectedHero && (
+              <ModalBody>
+                <Input
+                  label="Name"
+                  variant="bordered"
+                  value={selectedHero.name}
+                  onChange={(e) =>
+                    setSelectedHero({
+                      ...selectedHero,
+                      name: e.target.value,
+                    })
+                  }
+                />
+                <Input
+                  label="Superpower"
+                  variant="bordered"
+                  value={selectedHero.superpower}
+                  onChange={(e) =>
+                    setSelectedHero({
+                      ...selectedHero,
+                      superpower: e.target.value,
+                    })
+                  }
+                />
+                <Slider
+                  className="max-w-md"
+                  color="foreground"
+                  value={selectedHero.humilityScore}
+                  label="Humility Score"
+                  maxValue={10}
+                  minValue={0}
+                  showSteps={true}
+                  showOutline={true}
+                  size="md"
+                  step={1}
+                  onChange={(value) => {
+                    if (selectedHero) {
+                      setSelectedHero({
+                        ...selectedHero,
+                        humilityScore: Array.isArray(value) ? value[0] : value,
+                      });
+                    }
+                  }}
+                />
+              </ModalBody>
+            )}
             <ModalFooter>
               <Button color="danger" variant="flat" onPress={onClose}>
                 Close
@@ -105,8 +133,10 @@ function EditModal({
                 color="primary"
                 isDisabled={!isFormValid}
                 onPress={() => {
-                  editHero(selectedHero);
-                  onClose();
+                  if (selectedHero) {
+                    editHero(selectedHero);
+                    onClose();
+                  }
                 }}
               >
                 Submit

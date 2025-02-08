@@ -12,7 +12,19 @@ import {
   ModalFooter,
 } from "@heroui/modal";
 
-function CreateModal({ API_URL, isOpen, onOpenChange, getHeroes }) {
+interface CreateModalProps {
+  API_URL: string;
+  isOpen: boolean;
+  onOpenChange: (open: boolean) => void;
+  getHeroes: () => void;
+}
+
+function CreateModal({
+  API_URL,
+  isOpen,
+  onOpenChange,
+  getHeroes,
+}: CreateModalProps) {
   const [newHero, setNewHero] = useState({
     name: "",
     superpower: "",
@@ -21,7 +33,13 @@ function CreateModal({ API_URL, isOpen, onOpenChange, getHeroes }) {
 
   const isFormValid = newHero.name.trim() && newHero.superpower.trim();
 
-  const postHero = async (heroData) => {
+  interface Superhero {
+    name: string;
+    superpower: string;
+    humilityScore: number;
+  }
+
+  const postHero = async (heroData: Superhero) => {
     try {
       const response = await fetch(API_URL, {
         method: "POST",

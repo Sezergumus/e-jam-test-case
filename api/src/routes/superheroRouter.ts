@@ -2,7 +2,6 @@ import { Router } from "express";
 import {
   addSuperhero,
   getSuperheroes,
-  deleteSuperheroes,
   deleteSuperheroByBody,
   updateSuperhero,
 } from "../controllers/superheroController";
@@ -17,9 +16,6 @@ router.post("/", validateSuperHero, addSuperhero);
 
 // GET All heroes
 router.get("/", getSuperheroes);
-
-// DELETE All heroes
-router.delete("/", deleteSuperheroes);
 
 // DELETE Hero by ID
 router.delete("/one", deleteSuperheroByBody);

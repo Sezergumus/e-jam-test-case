@@ -1,6 +1,4 @@
 import { Link } from "@heroui/link";
-import { Snippet } from "@heroui/snippet";
-import { Code } from "@heroui/code";
 import { button as buttonStyles } from "@heroui/theme";
 
 import { siteConfig } from "@/config/site";
@@ -50,13 +48,7 @@ export default function Home() {
           GitHub
         </Link>
       </div>
-      <div className="mt-8">
-        <Snippet hideCopyButton hideSymbol variant="bordered">
-          <span>
-            Get started by adding <Code color="success">superheroes</Code>
-          </span>
-        </Snippet>
-      </div>
+
       <Table />
     </section>
   );

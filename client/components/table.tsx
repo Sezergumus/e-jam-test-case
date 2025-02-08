@@ -53,28 +53,31 @@ const INITIAL_VISIBLE_COLUMNS = [
   "humilityScore",
   "actions",
 ];
-
-interface Superhero {
-  id: number | null;
+interface Hero {
+  id: number;
   name: string;
   superpower: string;
   humilityScore: number;
 }
 
-// const API_URL = "http://localhost:5000/api/superheroes";
-const API_URL = "https://krqj7w6j-5000.euw.devtunnels.ms/api/superheroes";
+interface Superhero {
+  id: number;
+  name: string;
+  superpower: string;
+  humilityScore: number;
+}
+
+const API_URL = "http://localhost:5000/api/superheroes";
+// const API_URL = "https://krqj7w6j-5000.euw.devtunnels.ms/api/superheroes";
 
 export default function App() {
+  type Selection = Set<string> | "all";
+
   const [superheroes, setSuperheroes] = useState<Superhero[]>([]);
-  const [selectedHero, setSelectedHero] = useState<Superhero>({
-    id: null,
-    name: "",
-    superpower: "",
-    humilityScore: 5,
-  });
+  const [selectedHero, setSelectedHero] = useState<Hero | null>(null);
   const [fetchTime, setFetchTime] = useState<number | null>(null);
   const [filterValue, setFilterValue] = useState("");
-  const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set([]));
+  const [selectedKeys, setSelectedKeys] = useState<Selection>("all");
   const [visibleColumns, setVisibleColumns] = useState<Selection>(
     new Set(INITIAL_VISIBLE_COLUMNS)
   );
@@ -180,7 +183,7 @@ export default function App() {
       default:
         return cellValue;
     }
-  });
+  }, []);
 
   const getHeroes = async () => {
     try {
@@ -190,7 +193,7 @@ export default function App() {
       const endTime = performance.now();
 
       setSuperheroes(data);
-      setFetchTime(((endTime - startTime) / 1000).toFixed(2));
+      setFetchTime(Number(((endTime - startTime) / 1000).toFixed(2)));
     } catch (err) {
       console.error("Error fetching the superheroes: ", err);
     }
@@ -322,7 +325,9 @@ export default function App() {
                 closeOnSelect={false}
                 selectedKeys={visibleColumns}
                 selectionMode="multiple"
-                onSelectionChange={setVisibleColumns}
+                onSelectionChange={(keys) =>
+                  setVisibleColumns(keys as Selection)
+                }
               >
                 {columns.map((column) => (
                   <DropdownItem key={column.uid} className="capitalize">
@@ -393,7 +398,7 @@ export default function App() {
   }, [selectedKeys, items.length, page, pages, hasSearchFilter]);
 
   return (
-    <div className="w-full">
+    <div className="w-full mt-8 sm:mt-12">
       <CreateModal
         API_URL={API_URL}
         getHeroes={getHeroes}
