@@ -419,6 +419,7 @@ export default function App() {
         bottomContent={bottomContent}
         bottomContentPlacement="outside"
         classNames={classNames}
+        // @ts-ignore
         sortDescriptor={sortDescriptor}
         topContent={topContent}
         topContentPlacement="outside"
