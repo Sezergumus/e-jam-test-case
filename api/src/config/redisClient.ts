@@ -3,7 +3,9 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const client = new Redis(process.env.REDIS_URL as string);
+const client = new Redis(
+  "redis://default:YMpuHYHOtpQAOirEEUGKxtXgkiKDIsVl@redis.railway.internal:6379" as string
+);
 
 client.on("connect", () => {
   console.log("Connected to Redis");
