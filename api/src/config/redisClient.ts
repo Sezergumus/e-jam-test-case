@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const client = new Redis(process.env.REDIS_URL + "?family=0");
+const client = new Redis(process.env.REDIS_PUBLIC_URL as string);
 
 client.on("connect", () => {
   console.log("Connected to Redis");
