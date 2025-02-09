@@ -14,7 +14,8 @@
 
 - Next.js - React framework for production
 - Tailwind CSS - Utility-first CSS framework
-- Shadcn UI - Component library
+- Hero UI - UI Library (uses shadcn)
+- Sonner - Toasts
 - TypeScript
 
 ### Hosting
@@ -101,6 +102,8 @@ Request body:
 
 Fetch all superheroes sorted by humility score in descending order.
 
+Detailed endpoints are on the site's docs section.
+
 ## Testing
 
 ```bash
@@ -119,12 +122,12 @@ As a team player, here are some areas where we could collaborate to improve this
 
 ## If I Had More Time
 
-Here are some improvements and features I would love to explore:
+Here are some improvements and features I would like to add:
 
 1. Add authentication and user profiles
 2. Implement real-time updates using WebSocket
-3. Add more comprehensive test coverage
-4. Implement caching strategies
+3. Add more comprehensive test coverage (for new endpoints)
+4. Improved validation (such as adding to other endpoints and frontend)
 5. Add superhero categories or tags
 6. Create a more sophisticated scoring system
 7. Add caching client-side to improve fetch time
