@@ -67,8 +67,7 @@ interface Superhero {
   humilityScore: number;
 }
 
-const API_URL = "http://localhost:5000/api/superheroes";
-// const API_URL = "https://krqj7w6j-5000.euw.devtunnels.ms/api/superheroes";
+const API_URL = "https://api.ejam.sezergumus.dev/";
 
 export default function App() {
   type Selection = Set<string> | "all";
