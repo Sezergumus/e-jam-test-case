@@ -67,7 +67,7 @@ interface Superhero {
   humilityScore: number;
 }
 
-const API_URL = "https://api.ejam.sezergumus.dev/";
+const API_URL = "https://api.ejam.sezergumus.dev/api/superheroes";
 
 export default function App() {
   type Selection = Set<string> | "all";
